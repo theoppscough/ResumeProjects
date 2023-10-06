@@ -1,0 +1,243 @@
+import java.io.*;
+import java.util.Scanner;
+
+public class StudentMain extends Tester{
+    private static final String FILE_NAME = "students.txt";
+    private static StudentList studentList = new StudentList();
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        int choice;
+        do {
+            displayMenu();
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline character
+
+            switch (choice) {
+                case 1:
+                    loadStudentsFromFile();
+                    break;
+                case 2:
+                    addNewStudent();
+                    break;
+                case 3:
+                    removeStudent();
+     //             break;
+                case 4:
+                    searchStudent();
+                    break;
+ //             case 5:
+   //               addCourseToStudent();
+    //              break;
+                case 6:
+                    displayStudentInfo();
+                    break;
+                case 7:
+                    saveStudentsToFile();
+                    break;
+                case 8:
+                    System.out.println("Exiting...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+            System.out.println();
+        } while (choice != 8);
+    }
+
+    private static void displayMenu() {
+        System.out.println("Menu:");
+        System.out.println("1. Load student text file");
+        System.out.println("2. Add a new student");
+        System.out.println("3. Remove an existing student");
+        System.out.println("4. Look up student information (search by name or ID)");
+        System.out.println("5. Add a course to a student");
+        System.out.println("6. Display student info");
+        System.out.println("7. Save the student file");
+        System.out.println("8. Exit");
+    }
+
+    private static void loadStudentsFromFile() {
+        try (Scanner fileScanner = new Scanner(new File(FILE_NAME))) {
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                String[] studentData = line.split(",");
+                String firstName = studentData[0].trim();
+                String lastName = studentData[1].trim();
+                String studentID = studentData[2].trim();
+                Student Student = new Student(firstName, lastName, studentID);
+                studentList.insert(Student);
+            }
+            System.out.println("Students loaded from file.");
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + FILE_NAME);
+        }
+    }
+
+    private static void addNewStudent() {
+        System.out.println("Enter the details of the new student:");
+        System.out.print("First Name: ");
+        String firstName = scanner.nextLine();
+        System.out.print("Last Name: ");
+        String lastName = scanner.nextLine();
+        System.out.print("Student ID: ");
+        String studentID = scanner.nextLine();
+        Student student = new Student(firstName, lastName, studentID);
+        studentList.insert(student);
+        System.out.println("Student added successfully.");
+    }
+
+    private static void removeStudent() {
+        System.out.print("Enter the ID of the student to remove: ");
+        String studentID = scanner.nextLine();
+
+        boolean removed = studentList.remove(studentID);
+        if (removed) {
+            System.out.println("Student removed successfully.");
+        } else {
+            System.out.println("Student not found.");
+        }
+    }
+
+    private static void searchStudent() {
+        System.out.print("Enter the name or ID of the student to search: ");
+        String searchInput = scanner.nextLine();
+
+        String foundStudent = studentList.search(searchInput);
+        if (foundStudent != null) {
+            System.out.println("Student found: " + foundStudent);
+        } else {
+            System.out.println("Student not found.");
+        }
+    }
+
+    private static void addCourseToStudent() {
+        System.out.print("Enter the ID of the student: ");
+        String studentID = scanner.nextLine();
+        System.out.print("Enter the grade for the course: ");
+        double grade = scanner.nextDouble();
+        System.out.print("Enter the credits for the course: ");
+        int credits = scanner.nextInt();
+        scanner.nextLine(); // Consume newline character
+
+        boolean courseAdded = studentList.addCourseToStudent(studentID, grade, credits);
+        if (courseAdded) {
+            System.out.println("Course added successfully.");
+        } else {
+            System.out.println("Student not found.");
+        }
+    }
+
+    private static void displayStudentInfo() {
+        System.out.println("List of students:");
+        System.out.println(studentList.toString());
+    }
+
+    private static void saveStudentsToFile() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME))) {
+            writer.println(studentList.toString());
+            System.out.println("Students saved to file.");
+        } catch (IOException e) {
+            System.out.println("Error saving students to file: " + e.getMessage());
+        }
+    }
+}
+
+public class Student implements Comparable<Student> {
+    private String firstName;
+    private String lastName;
+    private String studentID;
+
+    public Student() {
+        this.firstName = null;
+        this.lastName = null;
+        this.studentID = "0000";
+
+    }
+
+    public Student(String firstName, String lastName, String studentID) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.studentID = studentID;
+    }
+
+    public String getfirstName() {
+        return firstName;
+    }
+
+    public void setfirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getlastName() {
+        return lastName;
+    }
+
+    public void setlastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getstudentID() {
+        return studentID;
+    }
+
+    public void setstudentID(String studentID) {
+        this.studentID = studentID;
+    }
+    public boolean equals(Student other) {
+        return this.studentID.equals(other.studentID);
+    }
+
+    public String toString() {
+        return "StudentID: " + studentID + ", Name: " + firstName + " " + lastName;
+    }
+
+    public int compareTo(Student other) {
+        int lastNameComparison = this.lastName.compareTo(other.lastName);
+        if (lastNameComparison == 0) {
+            return this.firstName.compareTo(other.firstName);
+        }
+        return lastNameComparison;
+    }
+}
+
+public class StudentRecord extends Student{
+    private double gpa;
+    private int credits;
+
+    public StudentRecord() {
+        super();
+        this.gpa = 0.0;
+        this.credits = 0;
+    }
+
+    public StudentRecord(String firstName, String lastName, String studentID, double gpa, int credits) {
+        super(firstName, lastName, studentID);
+        this.gpa = gpa;
+        this.credits = credits;
+    }
+
+    public double getGpa() {
+        return gpa;
+    }
+
+    public void setGpa(double gpa) {
+        this.gpa = gpa;
+    }
+
+    public int getCredits() {
+        return credits;
+    }
+
+    public void setCredits(int credits) {
+        this.credits = credits;
+    }
+
+    public void addGradeAndCredits(double grade, int credits) {
+        double totalQualityPoints = this.gpa * this.credits;
+        totalQualityPoints += grade * credits;
+        this.credits += credits;
+        this.gpa = totalQualityPoints / this.credits;
+    }
+}
