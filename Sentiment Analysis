@@ -1,0 +1,29 @@
+//This is a basic sentiment analyzer that scores each word of the input text as positive +1, neutral 0, or negative
+//-1. The sum of all the words in the text becomes the sentiment score. Text with an overall score >0 will 
+//be considered positive, likewise text will an overall score of <0 will be considered negative.
+
+from IPython.display import display, HTML
+from ipywidgets import interact_manual, widgets
+pos = "happy joy fun admire admiring satisfied adorable beautiful"
+neg = "sad aggressive anger annoy anxious chaos betrayal blame cry complaint mad"
+ddisplay(HTML("<H1>Spellchecker</h1>"))
+@interact_manual(text=widgets.Textarea())
+def ScoreSentiment(text):
+    words = text.split(" ")
+    score = 0
+    for word in words:
+        if word in pos.split():
+            score += 1
+        elif word in neg.split():
+            score -= 1
+        else:
+            score += 0
+    if score < 0:
+        print("Overall Sentiment: Negative")
+    elif score > 0:
+        print("Overall Sentiment: Positive")
+    return score
+
+print("Expect +2 input I am happy and full of joy, Actual, ", ScoreSentiment("I am happy and full of joy"))
+print("Expect -2 input I am sad and mad , Actual, ", ScoreSentiment("I am sad and mad"))
+print("Expect 0 input I am happy and full of anger, Actual, ", ScoreSentiment("I am happy and full of anger"))
