@@ -1,0 +1,210 @@
+public class SongRecord {
+    private String songTitle = "";
+    private String songArtist = "";
+    private int songMinutes = 0;
+    private int songSeconds = 0;
+
+    public SongRecord() {
+    }
+
+    public String getSongTitle() {
+        return this.songTitle;
+    }
+
+    public void setSongTitle(String songTitle) {
+        this.songTitle = songTitle;
+    }
+
+    public String getSongArtist() {
+        return this.songArtist;
+    }
+
+    public void setSongArtist(String songArtist) {
+        this.songArtist = songArtist;
+    }
+
+    public int getSongMinutes() {
+        return this.songMinutes;
+    }
+
+    public void setSongMinutes(int songMinutes) {
+        if (songMinutes < 0) {
+            throw new IllegalArgumentException("Minutes can not be negative");
+        } else {
+            this.songMinutes = songMinutes;
+        }
+    }
+
+    public int getSongSeconds() {
+        return this.songSeconds;
+    }
+
+    public void setSongSeconds(int songSeconds) {
+        if (songSeconds >= 0 && songSeconds <= 59) {
+            this.songSeconds = songSeconds;
+        } else {
+            throw new IllegalArgumentException("Seconds must be between 0 and 59");
+        }
+    }
+
+    public String toString() {
+        return "Title: " + this.songTitle + ", Artist: " + this.songArtist + " Duration:" + this.songMinutes + ":" + this.songSeconds;
+    }
+}
+
+public class SongRecord {
+    private String songTitle;
+    private String songArtist;
+    private int songMinutes;
+    private int songSeconds;
+
+    //Default constructor for SongRecord class
+    //initializes the member variables with default values
+    public SongRecord() {
+        this.songTitle = "";
+        this.songArtist = "";
+        this.songMinutes = 0;
+        this.songSeconds = 0;
+
+    }
+
+    public String getSongTitle() {
+        return songTitle;
+    }
+
+    public void setSongTitle(String songTitle) {
+        this.songTitle = songTitle;
+    }
+    public String getSongArtist() {
+        return songArtist;
+    }
+
+    public void setSongArtist(String songArtist) {
+        this.songArtist = songArtist;
+    }
+
+    public int getSongMinutes() {
+        return songMinutes;
+    }
+
+    public void setSongMinutes(int songMinutes) {
+        if (songMinutes < 0){ //minutes must negative
+            throw new IllegalArgumentException("Minutes can not be negative");
+        }
+        this.songMinutes = songMinutes;
+    }
+
+    public int getSongSeconds(){
+        return songSeconds;
+    }
+
+    public void setSongSeconds(int songSeconds) {
+        if (songSeconds < 0 || songSeconds > 59) {
+            throw new IllegalArgumentException("Seconds must be between 0 and 59");
+        }
+        this.songSeconds = songSeconds;
+    }
+    public String toString() {
+        return "Title: " + songTitle + ", Artist: " + songArtist + " Duration:" + songMinutes + ":" + songSeconds;
+    }
+}
+import java.util.Scanner;
+
+public class PlaylistOperations {
+    public static void main(String[] args) {
+        Playlist playlist = new Playlist();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("Menu:");
+            System.out.println("1. Add Song");
+            System.out.println("2. Get Song");
+            System.out.println("3. Remove Song");
+            System.out.println("4. Print All Songs");
+            System.out.println("5. Print Songs By Artist");
+            System.out.println("6. Size");
+            System.out.println("Q. Quit");
+            System.out.print("Enter a menu option: ");
+            String option = scanner.nextLine().toUpperCase();
+
+            switch (option) {
+                case "1":
+                    System.out.print("Enter the title of the song: ");
+                    String title = scanner.nextLine();
+                    System.out.print("Enter the artist of the song: ");
+                    String artist = scanner.nextLine();
+                    System.out.print("Enter the duration minutes of the song: ");
+                    int minutes = Integer.parseInt(scanner.nextLine());
+                    System.out.print("Enter the duration seconds of the song: ");
+                    int seconds = Integer.parseInt(scanner.nextLine());
+                    System.out.print("Enter the position where the song should be added: ");
+                    int position = Integer.parseInt(scanner.nextLine());
+                    try {
+                        SongRecord song = new SongRecord();
+                        song.setSongTitle(title);
+                        song.setSongArtist(artist);
+                        song.setSongMinutes(minutes);
+                        song.setSongSeconds(seconds);
+                        playlist.addSong(song, position);
+                        System.out.println("Song added successfully.");
+                    } catch (IllegalArgumentException | Playlist.FullPlaylistException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    } catch (Playlist.FullPlaylistException e) {
+                        System.out.println("Error: Playlist is full.");
+                    }
+                    break;
+
+                case "2":
+                    System.out.print("Enter the position of the song: ");
+                    int getPosition = Integer.parseInt(scanner.nextLine());
+                    try {
+                        SongRecord getSong = playlist.getSong(getPosition);
+                        System.out.println("Song at position " + getPosition + ": " + getSong.toString());
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                    break;
+
+                case "3":
+                    System.out.print("Enter the position of the song to remove: ");
+                    int removePosition = Integer.parseInt(scanner.nextLine());
+                    try {
+                        playlist.removeSong(removePosition);
+                        System.out.println("Song removed successfully.");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                    break;
+
+                case "4":
+                    playlist.printAllSongs();
+                    break;
+
+                case "5":
+                    System.out.print("Enter the artist name: ");
+                    String artistName = scanner.nextLine();
+                    Playlist songsByArtist = Playlist.getSongsByArtist(playlist, artistName);
+                    if (songsByArtist != null) {
+                        songsByArtist.printAllSongs();
+                    } else {
+                        System.out.println("Error: Either playlist or artist name is null.");
+                    }
+                    break;
+
+                case "6":
+                    int playlistSize = playlist.size();
+                    System.out.println("Playlist size: " + playlistSize);
+                    break;
+
+                case "Q":
+                    System.out.println("Exiting...");
+                    System.exit(0);
+                    break;
+
+                default:
+                    System.out.println("Invalid menu option. Please try again.");
+            }
+            System.out.println();
+        }
+    }
+}
