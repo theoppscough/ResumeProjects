@@ -1,0 +1,292 @@
+from IPython.display import display, Image
+import requests
+import random
+
+# Program asks for date of birth
+# Try-Except block for user input.
+try:
+    print("Please enter the birth date in MM/DD/YYYY format:")
+    bd = input("What is your birth date?")
+    # Month
+    MM = bd[:2]
+    # Day
+    y = int(bd[3:5])
+    # Year
+    year = int(bd[6:])
+    # Valid Months in the Year
+    months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+    # If-else statements; assigning MM(integer) to Month(String)
+    if MM == "01": 
+        month = "January"
+        # If MM passes, the varibale y (integer) must be a valid day in the month
+        if (y >= 1) and (y <= 31):
+            day = y
+        else:
+            # If not, an exception is raised. The user must try again.
+            raise
+    if MM == "02":
+        month = "February"
+        # Leap year 
+        if year % 4 == 0:
+            if (y >= 1) and (y <=29):
+                day = y
+            else:
+                raise
+        # Not a Leap year
+        else:
+            if (y >= 1) and (y <= 28):
+                day = y
+            else:
+                raise
+    if MM == "03":
+        month = "March"
+        if (y >= 1) and (y <= 31):
+            day = y
+        else:
+            raise
+    if MM == "04":
+        month = "April"
+        if (y >= 1) and (y <= 30):
+            day = y
+        else:
+            raise
+    if MM == "05":
+        month = "May"
+        if (y >= 1) and (y <= 31):
+            day = y
+        else:
+            raise
+    if MM == "06":
+        month = "June"
+        if (y >= 1) and (y <= 30):
+            day = y
+        else:
+            raise
+    if MM == "07":
+        month = "July"
+        if (y >= 1) and (y <= 31):
+            day = y
+        else:
+            raise
+    if MM == "08":
+        month = "August"
+        if (y >= 1) and (y <= 31):
+            day = y
+        else:
+            raise
+    if MM == "09":
+        month = "September"
+        if (y >= 1) and (y <= 30):
+            day = y
+        else:
+            raise
+    if MM == "10":
+        month = "October"
+        if (y >= 1) and (y <= 31):
+            day = y
+        else:
+            raise
+    if MM == "11":
+        month = "November"
+        if (y >= 1) and (y <= 30):
+            day = y
+        else:
+            raise
+    if MM == "12":
+        month = "December"
+        if (y >= 1) and (y <= 31):
+            day = y
+        else:
+            raise
+    if month == "March":
+        # Within the Month, if the day (integer) value matches, the Zodiac
+        # is Asigned.
+        if (day <= 20):
+            Zodiac = "Pisces"
+        else:
+            # Anything else within the month would
+            # equal to the different Zodiac.
+            Zodiac = "Aries"
+    if month == "April":
+        if (day <= 19):
+            Zodiac = "Aries"
+        else:
+            Zodiac = "Taurus"
+    if month == "May":
+        if (day <= 20):
+            Zodiac = "Taurus"
+        else:
+            Zodiac = "Gemini"
+    if month == "June":
+        if (day <= 20):
+            Zodiac = "Gemini"
+        else:
+            Zodiac = "Cancer"
+    if month == "July":
+        if (day <= 22):
+            Zodiac = "Cancer"
+        else:
+            Zodiac = "Leo"
+    if month == "August":
+        if (day <= 22):
+            Zodiac = "Leo"
+        else:
+            Zodiac = "Virgo"
+    if month == "September":
+        if (day <= 22):
+            Zodiac = "Virgo"
+        else:
+            Zodiac = "Libra"
+    if month == "October":
+        if (day <= 22):
+            Zodiac = "Libra"
+        else:
+            Zodiac = "Scorpio"
+    if month == "November":
+        if (day <= 21):
+            Zodiac = "Scorpio"
+        else:
+            Zodiac = "Sagittarius"
+    if month == "December":
+        if (day <= 21):
+            Zodiac = "Sagittarius"
+        else:
+            Zodiac = "Capricorn"
+    if month == "January":
+        if (day <= 19):
+            Zodiac = "Capricorn"
+        else:
+            Zodiac = "Aquarius"
+    if month == "February":
+        if (day <= 18):
+            Zodiac = "Aquarius"
+        else:
+            Zodiac = "Pisces"
+    # This determines if the month value is out of range
+    if MM in months:
+        pass
+    else:
+        raise
+# Any error within this section would be handled.
+except Exception as e:
+        # Code to handle other types of exceptions
+        print(f"An unexpected error occurred: {e}")
+
+try:
+    number1 = random.randint(1, 9)
+    number2 = random.randint(0, 8)
+
+    # Function for Zodiac information from horoscope-astrology API
+    def ZodiacDescription():
+        url = "https://horoscope-astrology.p.rapidapi.com/sign"
+        # Since this API only takes lowercase Zodiac strings, t will
+        # be used to lowercase the Zodiac String and implemented in the API
+
+        t = Zodiac.lower()
+        querystring = {"s": f"{t}"}
+
+        # API Key and Host
+        headers = {
+            "X-RapidAPI-Key": "3dd7b5eef0msheefbf7ad401ef24p104164jsned870d240bd3",
+            "X-RapidAPI-Host": "horoscope-astrology.p.rapidapi.com"
+        }
+        response = requests.get(url, headers=headers, params=querystring)
+        # Picks out specific items from the response.json() dictionary
+        j = response.json()
+
+        # Zodiac Information that is being printed:
+        print("\nDate Range: \n", j['date_range'])
+        print("\nSymbol : \n", j['symbol'])
+        print("\nElement: \n", j['element'])
+        print(f"\n{Zodiac} Strengths: \n", j['strengths'])
+        print(f"\n{Zodiac} Weaknesses \n", j['weaknesses'])
+        print("\nRuling Planet: \n", j['ruling_planet'])
+        print("\nCompatibility with other Zodiacs: \n", j['compatibility'])
+        print("\nAbout the Zodiac: \n", j['about'])
+        print("\nNature: \n", j['nature'])
+        print("\nLove: \n", j['love'])
+        print("\nCareer: \n", j['career'])
+
+    # This function will implement the Numerology function!
+    def Numerology():
+        url = "https://horoscope-astrology.p.rapidapi.com/numerology"
+        number1 = random.randint(1, 9)
+        # Chooses a random number one through nine
+        querystring = {"n": f"{number1}"}
+        headers = {
+            "X-RapidAPI-Key": "3dd7b5eef0msheefbf7ad401ef24p104164jsned870d240bd3",
+            "X-RapidAPI-Host": "horoscope-astrology.p.rapidapi.com"
+        }
+        response = requests.get(url, headers=headers, params=querystring)
+        j = response.json()
+
+        # Prints the lucky number and the description of the number in Numerology
+        print("\nYour Lucky Number! :", j['number'])
+        print("\nWhat does this number mean to you according to Numerology ?! :\n", j['desc'])
+
+    # This Function will use the Random module of Python
+    # After randomly choose 0-8, one of the fortunes will be printed
+    def FortuneCookie():
+        fortune_sayings = ['An exciting opportunity lies ahead of you.',
+                           'You will always be surrounded by true friends.',
+                           'Your ability to juggle many tasks will take you far.',
+                           'A routine task will turn into an enchanting adventure.',
+                           'Be true to your work, your word, and your friend.',
+                           'Respect yourself and others will respect you.',
+                           'I am enough. I have enough.',
+                           'Goodness is the only investment that never fails.',
+                           'Your life will be happy and peaceful.']
+        print(fortune_sayings[number2])
+
+    # This function will return a Tarot Card reading from the horoscope-astrology API.
+    def TarotCard():
+        url = "https://horoscope-astrology.p.rapidapi.com/tarotcard"
+        t = Zodiac.lower()
+        querystring = {"s":f"{t}"}
+        headers = {
+            "X-RapidAPI-Key": "3dd7b5eef0msheefbf7ad401ef24p104164jsned870d240bd3",
+            "X-RapidAPI-Host": "horoscope-astrology.p.rapidapi.com"}
+        response = requests.get(url, headers=headers)
+        # Picks out specific items from the response.json() dictionary
+        j = response.json()
+        print("\nTarot Card Reading: \n", j['res'][0]['name'])
+        print("\nTarot Card Description: \n", j['res'][0]['rdesc'])
+        print("\n", j['res'][0]['desc'])
+        print("\nTarot Card Sequence: \n", j['res'][0]['sequence'])
+
+    def GoogleImage():
+        url = "https://google-api31.p.rapidapi.com/imagesearch"
+        payload = {
+            # Search for specifed Zodiac image from GoogleImages.
+            "text": f"{Zodiac} Horoscope",
+            "safesearch": "on",
+            "region": "wt-wt",
+            "color": "",
+            "size": "",
+            "type_image": "",
+            "layout": "",
+            "max_results": 1
+        }
+        headers = {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": "3dd7b5eef0msheefbf7ad401ef24p104164jsned870d240bd3",
+            "X-RapidAPI-Host": "google-api31.p.rapidapi.com"}
+        response = requests.post(url, json=payload, headers=headers)
+        j = response.json()
+        # Picks out specific items from the response.json() dictionary
+        image_url = j['result'][0]['image']
+        # display module is used
+        display(Image(url=image_url))
+
+    # List of Print statements and functions.
+    print(f"\nYour birth date is {month} {day}, {year}\n")
+    print(f"Zodiac Sign: \n{Zodiac}")
+    GoogleImage()
+    ZodiacDescription()
+    print("\nFortune of the day! :")
+    FortuneCookie()
+    Numerology()
+    TarotCard()
+except Exception as e:
+    # Code to handle other types of exceptions
+    print(f"An unexpected error occurred: {e}")
