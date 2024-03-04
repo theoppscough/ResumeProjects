@@ -187,7 +187,7 @@ try:
 
         # API Key and Host
         headers = {
-            "X-RapidAPI-Key": "3dd7b5eef0msheefbf7ad401ef24p104164jsned870d240bd3",
+            "X-RapidAPI-Key": "API KEY",
             "X-RapidAPI-Host": "horoscope-astrology.p.rapidapi.com"
         }
         response = requests.get(url, headers=headers, params=querystring)
@@ -214,7 +214,7 @@ try:
         # Chooses a random number one through nine
         querystring = {"n": f"{number1}"}
         headers = {
-            "X-RapidAPI-Key": "3dd7b5eef0msheefbf7ad401ef24p104164jsned870d240bd3",
+            "X-RapidAPI-Key": "API KEY",
             "X-RapidAPI-Host": "horoscope-astrology.p.rapidapi.com"
         }
         response = requests.get(url, headers=headers, params=querystring)
@@ -244,7 +244,7 @@ try:
         t = Zodiac.lower()
         querystring = {"s":f"{t}"}
         headers = {
-            "X-RapidAPI-Key": "3dd7b5eef0msheefbf7ad401ef24p104164jsned870d240bd3",
+            "X-RapidAPI-Key": "API KEY",
             "X-RapidAPI-Host": "horoscope-astrology.p.rapidapi.com"}
         response = requests.get(url, headers=headers)
         # Picks out specific items from the response.json() dictionary
@@ -269,7 +269,7 @@ try:
         }
         headers = {
             "content-type": "application/json",
-            "X-RapidAPI-Key": "3dd7b5eef0msheefbf7ad401ef24p104164jsned870d240bd3",
+            "X-RapidAPI-Key": "API KEY",
             "X-RapidAPI-Host": "google-api31.p.rapidapi.com"}
         response = requests.post(url, json=payload, headers=headers)
         j = response.json()
