@@ -1,0 +1,72 @@
+
+-- Question 1
+--Use excel sheet to submit the 3NF. Don't modify anything in techconsult_projects.xls
+--Question 2: Create Your Internal Mode for your 4 new Tables Here. As always, drop order is critical as this entire script must be re-
+executable any number of times. 
+--Your Drops, Creates, Alters go here. (10 pts)
+if exists(select * from sys.objects where name='WorkRecords') drop table WorkRecords
+go
+CREATE TABLE WorkRecords
+(
+ProjNum INT,
+EmpNo INT,
+Hrs_Worked INT
+constraint pk_peid PRIMARY KEY(EmpNo,ProjNum)
+)
+if exists(select * from sys.objects where name='Employees') drop table Employees
+go
+CREATE TABLE Employees (
+ EmpNo INT PRIMARY KEY,
+ Emp_fName VARCHAR(255),
+ Emp_LName VARCHAR(255),
+ Rate_category char(1),
+ FOREIGN KEY (Rate_category) REFERENCES RateCategories(Rate_category));
+--Write the sql code for the other 2 tables and add FK to Employees table
+drop table Projects
+drop table RateCategories
+CREATE TABLE Projects(
+ ProjNum INT PRIMARY KEY,
+ ProjectName VARCHAR(255)
+)
+CREATE TABLE RateCategories(
+ Rate_category char(1) PRIMARY KEY,
+ HrlyRate money
+)
+-- (2) end of internal model build
+--Question 3: Your Data Cleansing SQL Goes Here (10)
+UPDATE techconsult_import$ SET [Emp Name] = 'Alice Johnson' WHERE [Emp Name] = 'Alice Johnsooooon'
+UPDATE techconsult_import$ SET [Emp Name] = 'Bob Smith' WHERE [Emp Name] = 'bob Smith'
+UPDATE techconsult_import$ SET [Project Name] = 'Software Migration for FinCorp' WHERE [Project Name] = 'Software Migration for rfinCorp'
+go
+-- (3) end of cleansing sql
+--Question 4: Code Your Migration SQL Here. This will tranform and insert the data into the 4 new tables. (20 pts)
+INSERT INTO Projects
+ select distinct [Proj Num], [Project Name]
+ from techconsult_import$
+ 
+INSERT INTO Employees
+ select distinct [Emp No], 
+ left([Emp Name], charindex(' ', [Emp Name])),
+ right([Emp Name], len([Emp Name]) - charindex(' ',[Emp Name])),
+ [Rate Cat]
+ from techconsult_import$
+delete from WorkRecords
+INSERT INTO WorkRecords
+ select distinct [Proj Num], [Emp No], [Hrs Worked]
+ from techconsult_import$
+INSERT INTO RateCategories
+ select distinct [Rate Cat], [Hrly Rate]
+ from techconsult_import$
+go
+-- (4) end of migration sql
+select * from WorkRecords
+--Question 5: Select statement used to verify your migration was correct (10 pts)
+--Be sure to see the example of what your output should look like.
+SELECT DISTINCT w.ProjNum, w.EmpNo, e.Emp_fName, e.Emp_LName
+, r.Rate_category, r.HrlyRate, w.Hrs_Worked
+ from WorkRecords w
+ JOIN Employees e ON w.EmpNo= e.EmpNo
+ JOIN Projects p ON p.ProjNum=w.ProjNum
+ JOIN RateCategories r ON e.Rate_category=r.Rate_category
+go
+-- (5) end of verify sq
